@@ -1,0 +1,37 @@
+
+{% extends 'forum/base.html' %}
+
+{% block content %}
+{% for msg in messages %}
+    <div>
+        {% if msg.message__is_head %}
+            <h3>{{ msg.message__text }}</h3>
+        {% else %}
+        <p style="font-size:14px">{{ msg.message__text }}</p>
+        {% endif %}
+            <p style="font-size:10px">{{ msg.message__author__username }} | Date {{ msg.message__create_date }} | Rating: {{ msg.rating }}
+        </p>
+            <form action="{% url 'forum:delete_message' msg.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="message_pk" value="{{msg.pk}}">
+                <input type="submit" value="Delete">
+            </form>
+    </div>
+{% endfor %}
+</div>
+<div>
+    <form action="{% url 'forum:topic' message.id %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}
