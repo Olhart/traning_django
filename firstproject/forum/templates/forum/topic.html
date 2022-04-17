@@ -20,7 +20,7 @@
 {% endfor %}
 </div>
 <div>
-    <form action="{% url 'forum:topic' message.id %}" method="post">
+    <form action="{% url 'forum:topic' pk %}" method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="fieldWrapper">

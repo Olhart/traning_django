@@ -7,7 +7,7 @@ class MessageInline(admin.StackedInline):
 
 class ForumAdmin(admin.ModelAdmin):
     # fields = ['title', 'author', 'is_published']
-    list_display = ('id', 'title', 'author', 'create_date', 'last_change_date', 'is_published')
+    list_display = ('id', 'title', 'author', 'create_date', 'is_published')
     list_display_links = ('title', 'author')
     list_editable = ('is_published',)
     fieldsets = [

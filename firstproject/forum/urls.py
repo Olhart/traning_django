@@ -15,7 +15,10 @@ urlpatterns = [
     path('user/add/', UserCreateView.as_view(), name='user_add'),
     path('user/<int:pk>/update', UserUpdateView.as_view(), name='user_update'),
     path('user/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
+    path('login/', login, name='login'),
+
     # path('topic/<int:pk>/', TopicView.as_view(), name='topic'),
+    path('test/', test)
 ]
 
 if settings.DEBUG:

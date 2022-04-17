@@ -11,7 +11,7 @@ class IndexForum(ListView):
     # queryset = Forum.objects.all().select_related('author')
 
     def get_queryset(self):
-        queryset = Forum.objects.filter(is_published=True).values('title', 'author__username').annotate(rating=Sum('message__messagerating__mark'), last_message_date=Min('message__create_date'))
+        queryset = Forum.objects.filter(is_published=True).values('pk', 'title', 'author__username').annotate(rating=Sum('message__messagerating__mark'), last_message_date=Min('message__create_date')).order_by('title')
         return queryset
 
 class UserView(DetailView):

@@ -1,4 +1,4 @@
-{% extends 'women/base.html' %}
+{% extends 'forum/base.html' %}
 
 {% block content %}
 <h1>{{title}}</h1>
@@ -7,7 +7,7 @@
     {% csrf_token %}
 
 <div class="form-error">{{ form.non_field_errors }}</div>
-
+<div class="form-error">{{ errors }}</div>
 {% for f in form %}
 <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
 <div class="form-error">{{ f.errors }}</div>

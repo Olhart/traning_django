@@ -3,22 +3,22 @@
 {% block content %}
 <ul class="list-articles">
 	{% for f in forum_list %}
-			<li><div class="article-panel">
-	<p class="first">Author: {{ f.author__username }}</p>
-	<p class="last">Change date: {{ f.last_message_date | date:"d-m-Y H:i:s"}} | Rating: {{ f.rating }}</p>
-</div>
+		<li><div class="article-panel">
+			<p class="first">Author: {{ f.author__username }}</p>
+			<p class="last">Change date: {{ f.last_message_date | date:"d-m-Y H:i:s"}} | Rating: {{ f.rating }}</p>
+		</div>
 
-{% if p.photo %}
-	<p><img class="img-article-left thumb" src="{{p.photo.url}}"></p>
-{% endif %}
+		{% if p.photo %}
+			<p><img class="img-article-left thumb" src="{{ p.photo.url }}"></p>
+		{% endif %}
 
-				<h2>{{f.title}}</h2>
-	{% autoescape on %}
-	<!-- {{f.content|linebreaks|truncatewords:50}} -->
-	{% endautoescape %}
-			<div class="clear"></div>
-			<p class="link-read-post"><a href="{{ f.get_absolute_url }}">Читать форум</a></p>
-			</li>
+		<h2>{{f.title}}</h2>
+		{% autoescape on %}
+		<!-- {{f.content|linebreaks|truncatewords:50}} -->
+		{% endautoescape %}
+		<div class="clear"></div>
+			<p class="link-read-post"><a href="{% url 'forum:topic' f.pk %}">Читать форум</a></p>
+		</li>
 	{% endfor %}
 </ul>
 {% endblock %}

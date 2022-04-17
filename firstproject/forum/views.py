@@ -1,9 +1,10 @@
+from xml import dom
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, HttpResponse
 from django.db.models.aggregates import Sum
 from django.urls import reverse, reverse_lazy
 
-from .models import Forum, User, Message
-from .forms import MessageForm, DeleteMessageForm, CreateTopicForm
+from .models import Forum, User, Message, Session, Category
+from .forms import MessageForm, DeleteMessageForm, CreateTopicForm, LoginForm
 from forum.class_based_view import *
 
 
@@ -40,7 +41,7 @@ def Topic_View(request, pk):
     else:
         form = MessageForm()
         msgs = Forum.custom.get_messages_with_rating(pk)
-    return render(request, 'forum/topic.html', {'form': form, 'messages': msgs})
+    return render(request, 'forum/topic.html', {'form': form, 'messages': msgs, 'pk':pk})
 
 
 def DeleteMessage(request, pk):
@@ -50,3 +51,27 @@ def DeleteMessage(request, pk):
         Message.objects.get(pk=msg_pk).delete()
         return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': pk}))
     return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': pk}))
+
+def login(request):
+    errors = ''
+    if request.method == 'POST':
+        user = request.POST.get('login')
+        password = request.POST.get('password')
+        url = request.POST.get('continue', '/')
+        session = Session.custom.do_login(user, password)
+        print(session)
+        if session:
+            response = HttpResponseRedirect(url)
+            response.set_cookie(
+                'sessid', session.key,
+                domain=None, httponly=True,
+                expires=session.expires
+            )
+            return response
+        else:
+            error = u'Неверный логин / пароль'
+    form = LoginForm()
+    return render(request, 'forum/login.html', {'errors': errors, 'form': form })
+
+def test(request):
+    return HttpResponse(request.body)
