@@ -1,5 +1,5 @@
 from time import timezone
-from forum.models import Session
+from account.models import Session
 from django.utils import timezone
 
 class CheckSessionMiddleware:
@@ -15,8 +15,7 @@ class CheckSessionMiddleware:
             sessid = request.COOKIES.get('sessid')
             
             for cookie in request.COOKIES:
-                print(cookie)
-            session = Session.objects.get(
+                session = Session.objects.get(
                 key=sessid,
                 expires__gte=timezone.now()
             )

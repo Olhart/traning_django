@@ -3,7 +3,8 @@ from django.db.models.aggregates import Sum, Min
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .models import Forum, User, Message
+from forum.models import Forum, Message
+from account.models import User
 
 class IndexForum(ListView):
     model = Forum

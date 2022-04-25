@@ -1,9 +1,9 @@
-from xml import dom
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, HttpResponse
 from django.db.models.aggregates import Sum
 from django.urls import reverse, reverse_lazy
 
-from .models import Forum, User, Message, Session, Category
+from forum.models import Forum, Message, Category
+from account.models import User, Session
 from .forms import MessageForm, DeleteMessageForm, CreateTopicForm, LoginForm
 from forum.class_based_view import *
 
@@ -74,4 +74,5 @@ def login(request):
     return render(request, 'forum/login.html', {'errors': errors, 'form': form })
 
 def test(request):
-    return HttpResponse(request.body)
+
+    return HttpResponse('hi')

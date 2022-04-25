@@ -1,17 +1,15 @@
+import itertools
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from django.db.models.aggregates import Sum
 # from django.core.signing import Signer
-from django.utils import timezone
-from datetime import timedelta
+# from django.utils import timezone
+# from datetime import timedelta
+from pytils.translit import slugify
+from account.models import User
 
-class ForumManager(models.Manager):
-    def get_messages_with_rating(self, pk):
-        msgs = self.filter(pk=pk).values('message', 'message__text', "message__author__username",'message__create_date', 'message__is_head', 'id').annotate(rating=Sum("message__messagerating__mark"))
-        return msgs
-
-class User(models.Model):
+""" class User(models.Model):
     username = models.CharField("Логин", max_length=32, unique=True)
     first_name = models.CharField("Имя", max_length=32, blank=True) 
     last_name = models.CharField("Фамилия", max_length=32, blank=True)
@@ -63,21 +61,27 @@ class Session(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.key
+        return self.key """
 
 class Category(models.Model):
     name = models.CharField(max_length=156)
+    url = models.SlugField('URL', unique=True, max_length=24, default='about-us')
 
     def __str__(self):
         return self.name
 
+class ForumManager(models.Manager):
+    def get_messages_with_rating(self, pk):
+        msgs = self.filter(pk=pk).values('message', 'message__text', "message__author__username",'message__create_date', 'message__is_head', 'id').annotate(rating=Sum("message__messagerating__mark"))
+        return msgs
+ 
 class Forum(models.Model):
     title = models.CharField("Название", max_length=256)
-    url = models.SlugField('Слаг', blank=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
+    url = models.SlugField('URL', max_length=24, unique=True)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
     author = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default="deleted", verbose_name='Создатель')
     create_date = models.DateTimeField("Дата создания", auto_now_add=True)
-    is_published = models.BooleanField("Опубликовано", default=True)
+    is_published = models.BooleanField("Опубликовано", default=False)
     custom = ForumManager()
     objects = models.Manager()
 
@@ -86,6 +90,21 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_slug(self, title):
+        max_length = self._meta.get_field('url').max_length
+        slug = slug_candidate = slugify(title)
+        for i in itertools.count(1):
+            if not self.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = f'{slug[:(max_length-(len(str(i)+1)))]}-{i}'
+        self.url = slug_candidate
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            title = self.title
+            self.get_slug(title)
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['title']
