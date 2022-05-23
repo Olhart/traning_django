@@ -2,7 +2,7 @@
 
 {% block content %}
     <div>
-        <form action="{% url 'forum:user_update' user.id%}" method="post">
+        <form action="{% url 'account:user_update' user.id%}" method="post">
             {% csrf_token %}
             {% for field in form %}
                 <div class="fieldWrapper">

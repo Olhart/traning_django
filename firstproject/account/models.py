@@ -3,6 +3,7 @@ from django.urls import reverse
 # from django.core.signing import Signer
 from django.utils import timezone
 from datetime import timedelta
+from account.base import SessionBase
 
 
 class User(models.Model):
@@ -28,26 +29,12 @@ class User(models.Model):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
-class SessionManager(models.Manager):
-    def do_login(self, login, password):
-        try:
-            user = User.objects.get(username=login)
-        except User.DoesNotExist:
-            return None
-        if user.password != password:
-            return None
-        self = Session()
-        value = str(login) + str(password)
-        self.key = value
-        self.user = user
-        self.expires = timezone.now() + timedelta(days=1)
-        self.save()
-        try:
-            old_session=Session.objects.get(user=user, expires__lt=timezone.now())
-        except self.DoesNotExist:
-            return self
-        old_session.delete()
-        return self
+    def save(self, *args, **kwargs):
+        self.last_active_date = timezone.now()
+        return super().save( *args, **kwargs)
+
+class SessionManager(models.Manager, SessionBase):
+    pass
 
 class Session(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

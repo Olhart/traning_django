@@ -2,7 +2,7 @@
 
 {% block content %}
     <div>
-        <form action="{% url 'forum:user_add'%}" method="post">
+        <form action="{% url 'account:register'%}" method="post">
             {% csrf_token %}
             {% for field in form %}
                 <div class="fieldWrapper">

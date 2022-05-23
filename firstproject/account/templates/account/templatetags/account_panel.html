@@ -1,0 +1,6 @@
+{% if user %}
+    <li class="last"><a href="{% url 'account:user' user.id %}">{{user.username}}</a> | <a href="{% url 'account:logout' %}">Выйти</a></li>
+{% else %}
+    <li class="last"><a href="{% url 'account:register' %}">Регистрация</a> | <a href="{% url 'account:login' %}">Войти</a></li>
+{% endif %}
+

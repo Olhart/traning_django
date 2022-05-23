@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, HttpResponse
 from django.db.models.aggregates import Sum
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 
 from forum.models import Forum, Message, Category
-from account.models import User, Session
-from .forms import MessageForm, DeleteMessageForm, CreateTopicForm, LoginForm
+from account.models import User
+from .forms import MessageForm, DeleteMessageForm, CreateTopicForm
 from forum.class_based_view import *
 
 
@@ -51,27 +51,6 @@ def DeleteMessage(request, pk):
         Message.objects.get(pk=msg_pk).delete()
         return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': pk}))
     return HttpResponseRedirect(reverse('forum:topic', kwargs={'pk': pk}))
-
-def login(request):
-    errors = ''
-    if request.method == 'POST':
-        user = request.POST.get('login')
-        password = request.POST.get('password')
-        url = request.POST.get('continue', '/')
-        session = Session.custom.do_login(user, password)
-        print(session)
-        if session:
-            response = HttpResponseRedirect(url)
-            response.set_cookie(
-                'sessid', session.key,
-                domain=None, httponly=True,
-                expires=session.expires
-            )
-            return response
-        else:
-            error = u'Неверный логин / пароль'
-    form = LoginForm()
-    return render(request, 'forum/login.html', {'errors': errors, 'form': form })
 
 def test(request):
 

@@ -13,11 +13,9 @@ class CheckSessionMiddleware:
         
         try:
             sessid = request.COOKIES.get('sessid')
-            
-            for cookie in request.COOKIES:
-                session = Session.objects.get(
-                key=sessid,
-                expires__gte=timezone.now()
+            session = Session.objects.get(
+            key=sessid,
+            expires__gte=timezone.now()
             )
             request.custom_session = session
             request.custom_user = session.user

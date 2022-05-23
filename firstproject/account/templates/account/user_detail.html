@@ -9,9 +9,9 @@
         <p>Rating: {{ user_rating.rating }}</p>
     </div> 
     <div class="clear"></div>
-			<p class="link-read-post"><a href="{% url 'forum:user_update' user.pk %}">Change</a></p>
+			<p class="link-read-post"><a href="{% url 'account:user_update' user.pk %}">Change</a></p>
 
-    <form action="{% url 'forum:user_delete' user.pk %}" method="post">
+    <form action="{% url 'account:user_delete' user.pk %}" method="post">
         {% csrf_token %}
         <input type="submit" value="Delete">
     </form>   
